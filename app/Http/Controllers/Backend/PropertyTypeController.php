@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PropertyType;
+use App\Models\Amenities;
 use Illuminate\Support\Facades\Auth;
 
 class PropertyTypeController extends Controller
@@ -60,6 +61,62 @@ class PropertyTypeController extends Controller
     public function DeleteType($id){
     
         PropertyType::findOrFail($id)->delete();
+    
+        $notification = array(
+          'message' => 'Property type has been deleted successfully',
+            'alert-type' =>'success'
+        );
+    
+        return redirect()->back()->with($notification);
+    }
+
+
+    //  --********************************  Amenitie All method ******************************--
+     
+    public function AllAmenitie(){
+        $amenities = Amenities::latest()->get();
+        return view('backend.amenities.all_amenitie', compact('amenities'));
+    }
+
+    public function AddAmenitie(){
+        return view('backend.amenities.add_amenitie');
+    }
+
+    public function StoreAmenitie(Request $request){
+    
+
+        Amenities::insert([
+            'amenitis_name' => $request->amenitis_name,
+        ]);
+
+        $notification = array(
+            'message' => 'Amenities has been added',
+            'alert-type' =>'success'
+        );
+        return redirect()->route('all.amenitie')->with($notification);
+    }
+
+    public function EditAmenitie($id){
+        $amenities = Amenities::findOrFail($id);
+        return view('backend.amenities.edit_amenitie', compact('amenities'));
+    }
+    public function UpdateAmenitie(Request $request){
+        
+        $ame_id = $request->id;
+        Amenities::findOrFail($ame_id)->update([
+            'amenitis_name' => $request->amenitis_name,
+        ]);
+
+        $notification = array(
+            'message' => 'Amenities has been updated successfully',
+            'alert-type' =>'success'
+        );
+        return redirect()->route('all.amenitie')->with($notification);
+    }
+
+    public function DeleteAmenitie($id){
+    
+        Amenities::findOrFail($id)->delete();
     
         $notification = array(
           'message' => 'Property type has been deleted successfully',
